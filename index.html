@@ -25,32 +25,26 @@
         .header h1 { color: var(--bg-deep); font-size: 24px; font-weight: 800; letter-spacing: 2px; }
         .developer { display: inline-block; background: rgba(0, 0, 0, 0.3); padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; color: var(--bg-deep); font-weight: bold; }
         .content { padding: 25px; }
-        
         .user-info { border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: rgba(162, 255, 0, 0.05); }
         .user-badge { position: absolute; top: -10px; right: 15px; background: var(--accent); color: var(--bg-deep); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .user-photo { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #1a1a1a; }
-        
-        /* Location Style */
-        .location-tag { font-size: 11px; color: var(--accent); opacity: 0.9; margin-top: 5px; display: flex; align-items: center; gap: 4px; }
-        
         .stats { display: flex; justify-content: space-around; margin: 20px 0; }
         .stat-card { border-radius: 15px; padding: 15px 10px; width: 46%; border: 1px solid var(--accent); text-align: center; background: rgba(255,255,255,0.02); }
         .stat-card h3 { font-size: 12px; opacity: 0.8; margin-bottom: 5px; }
         .stat-card .value { font-size: 20px; font-weight: 700; color: var(--accent); }
-        
         .progress-container { margin: 25px 0; }
         .progress-label { margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; color: var(--accent); }
         .progress-bar { height: 12px; background: #001a4d; border-radius: 10px; overflow: hidden; border: 1px solid var(--accent); }
         .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px var(--accent); }
-        
         .btn-3d { width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; background: var(--accent); color: var(--bg-deep); text-transform: uppercase; transition: transform 0.2s; }
         .btn-3d:active { transform: scale(0.98); }
         .btn-3d:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-        
         .ad-notification { position: fixed; top: 20px; background: var(--accent); color: var(--bg-deep); padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         
+        /* Footer Style with Link */
         .footer { text-align: center; padding: 15px; font-size: 11px; border-top: 1px solid rgba(162, 255, 0, 0.2); color: rgba(255,255,255,0.6); }
         .footer a { color: var(--accent); text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .footer a:hover { text-shadow: 0 0 10px var(--accent); }
     </style>
 </head>
 <body>
@@ -60,21 +54,17 @@
         <div id="home-page">
             <div class="header">
                 <h1>VAULTX BD</h1>
-                <div class="developer">Self-Click Monitoring On</div>
+                <div class="developer">Self-Click Mode Active</div>
             </div>
             
             <div class="content">
                 <!-- User Profile Section -->
                 <div class="user-info">
-                    <div class="user-badge">VIP PARTNER</div>
+                    <div class="user-badge">PARTNER</div>
                     <img id="user-photo" class="user-photo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
                     <div>
                         <p id="user-name" style="font-weight: 800; font-size: 18px;">Loading...</p>
                         <p id="user-id" style="font-size: 13px; opacity: 0.7; color: var(--accent);">@username</p>
-                        <!-- Location Display -->
-                        <div class="location-tag">
-                            📍 <span id="user-location">Detecting Location...</span>
-                        </div>
                     </div>
                 </div>
 
@@ -106,6 +96,7 @@
             </div>
         </div>
         
+        <!-- Updated Footer with Links -->
         <div class="footer">
             POWERED BY <a href="https://t.me/itsmanjorul" target="_blank">XENZITE</a> 
             • DEVELOPED BY <a href="https://t.me/itsmanjorul" target="_blank">MANJORUL ISLAM</a>
@@ -113,7 +104,9 @@
     </div>
 
     <script>
+        // ############################################################
         // 1. Firebase Configuration
+        // ############################################################
         const firebaseConfig = {
             apiKey: "AIzaSyDX5P48FmrKCK7BLnkJinyqG7mJYem0u_w",
             authDomain: "vaultxbd.firebaseapp.com",
@@ -129,13 +122,15 @@
 
         const POINTS_PER_AD = 0.0001; 
         const COOLDOWN_TIME = 5; 
+        
+        // ############################################################
+        // 2. Monetag Zone ID
+        // ############################################################
         const MY_ZONE_ID = 10144078; 
 
         let watchedAdsCount = 0, earnedPoints = 0, isCooldown = false;
         let tgUser = { id: 'guest_user', first_name: 'Guest User' };
-        let userLocation = "Unknown";
 
-        // অ্যাপ লোড হওয়ার সময় কাজ শুরু
         function initApp() {
             const tg = window.Telegram.WebApp;
             tg.expand();
@@ -145,31 +140,12 @@
                 tgUser = tg.initDataUnsafe.user;
                 document.getElementById('user-name').textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
                 document.getElementById('user-id').textContent = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
-                if (tgUser.photo_url) document.getElementById('user-photo').src = tgUser.photo_url;
+                
+                if (tgUser.photo_url) {
+                    document.getElementById('user-photo').src = tgUser.photo_url;
+                }
             }
-
-            // লোকেশন শনাক্ত করা
-            fetchLocation();
             syncUserData();
-        }
-
-        // লোকেশন শনাক্ত করার ফাংশন (IP API ব্যবহার করে)
-        function fetchLocation() {
-            fetch('https://ipapi.co/json/')
-                .then(res => res.json())
-                .then(data => {
-                    userLocation = `${data.city}, ${data.country_name}`;
-                    document.getElementById('user-location').textContent = userLocation;
-                    // লোকেশন পাওয়ার পর ডাটাবেজ আপডেট
-                    db.ref('self_click_users/' + tgUser.id).update({
-                        location: userLocation,
-                        ip: data.ip
-                    });
-                })
-                .catch(err => {
-                    document.getElementById('user-location').textContent = "Location unavailable";
-                    console.error("Location Error:", err);
-                });
         }
 
         function syncUserData() {
@@ -187,7 +163,6 @@
                         username: tgUser.username || 'N/A',
                         points: 0,
                         watched: 0,
-                        location: userLocation,
                         lastActive: Date.now()
                     });
                 }
@@ -197,6 +172,7 @@
         function updateUI() {
             document.getElementById('watched-ads').textContent = watchedAdsCount;
             document.getElementById('earned-points').textContent = earnedPoints.toFixed(4);
+            
             let progress = (watchedAdsCount % 500) / 5; 
             document.getElementById('ads-progress').textContent = Math.floor(progress) + "%";
             document.getElementById('progress-fill').style.width = progress + "%";
@@ -205,11 +181,22 @@
         function watchAd() {
             if (isCooldown) return;
             showAdNotification("🔄 LOADING VIDEO...");
+
             const adFunction = `show_${MY_ZONE_ID}`;
+            
             if (typeof window[adFunction] === 'function') {
-                window[adFunction]().then(() => { rewardUser(); startCooldown(); }).catch(() => showAdNotification("❌ AD FAILED!"));
+                window[adFunction]().then(() => {
+                    rewardUser();
+                    startCooldown();
+                }).catch((e) => {
+                    showAdNotification("❌ AD FAILED!");
+                });
             } else {
-                setTimeout(() => { rewardUser(); startCooldown(); }, 2000);
+                // Default fallback for testing
+                setTimeout(() => {
+                    rewardUser();
+                    startCooldown();
+                }, 2000);
             }
         }
 
