@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickZite- Auto Click</title>
+    <title>CLICKZITE - Self Click </title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- FontAwesome for professional icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- ############################################################ -->
-    <!-- MONETAG SDK: এখানে '10144078' এর জায়গায় আপনার নিজের Zone ID বসান -->
+    <!-- MONETAG SDK -->
     <script src='//libtl.com/sdk.js' data-zone='10144078' data-sdk='show_10144078'></script>
-    <!-- ############################################################ -->
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -23,62 +20,28 @@
         body { background-color: var(--bg-deep); color: var(--text); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .container { width: 100%; max-width: 500px; background: var(--bg-deep); border-radius: 20px; overflow: hidden; box-shadow: 0 0 20px var(--accent); border: 2px solid var(--accent); position: relative; }
         .header { background: var(--accent); padding: 25px 20px; text-align: center; }
-        
         .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
         .app-icon { width: 35px; height: 35px; object-fit: contain; border-radius: 5px; }
         .header h1 { color: var(--bg-deep); font-size: 24px; font-weight: 800; letter-spacing: 2px; }
-        
         .developer { display: inline-block; background: rgba(0, 0, 0, 0.3); padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; color: var(--bg-deep); font-weight: bold; cursor: pointer; }
         .content { padding: 25px; }
         .user-info { border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: rgba(162, 255, 0, 0.05); }
         .user-badge { position: absolute; top: -10px; right: 15px; background: var(--accent); color: var(--bg-deep); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .user-photo { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #1a1a1a; }
-        
         .stats { display: flex; justify-content: space-around; margin: 20px 0; }
         .stat-card { border-radius: 15px; padding: 15px 10px; width: 46%; border: 1px solid var(--accent); text-align: center; background: rgba(255,255,255,0.02); }
         .stat-card h3 { font-size: 12px; opacity: 0.8; margin-bottom: 5px; text-transform: uppercase; }
         .stat-card .value { font-size: 22px; font-weight: 700; color: var(--accent); }
-        
         .progress-container { margin: 25px 0; }
         .progress-label { margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; color: var(--accent); }
         .progress-bar { height: 14px; background: #001a4d; border-radius: 10px; overflow: hidden; border: 1px solid var(--accent); position: relative; }
-        
-        .progress-fill { 
-            height: 100%; 
-            background: linear-gradient(90deg, var(--accent), #e1ff00, var(--accent));
-            background-size: 200% 100%;
-            width: 0%; 
-            transition: width 0.5s ease; 
-            box-shadow: 0 0 15px var(--accent);
-            animation: shimmer 2s infinite linear;
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #e1ff00, var(--accent)); background-size: 200% 100%; width: 0%; transition: width 0.5s ease; box-shadow: 0 0 15px var(--accent); animation: shimmer 2s infinite linear; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .btn-group { display: flex; flex-direction: column; gap: 12px; }
-        .btn-3d { 
-            width: 100%; 
-            padding: 16px; 
-            border: none; 
-            border-radius: 12px; 
-            font-size: 15px; 
-            font-weight: 800; 
-            cursor: pointer; 
-            background: var(--accent); 
-            color: var(--bg-deep); 
-            text-transform: uppercase; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.3s;
-        }
+        .btn-3d { width: 100%; padding: 16px; border: none; border-radius: 12px; font-size: 15px; font-weight: 800; cursor: pointer; background: var(--accent); color: var(--bg-deep); text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s; }
         .btn-3d:active { transform: scale(0.96); }
-        .btn-3d:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+        .btn-3d:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-stop { background: #ff3e3e !important; color: white !important; }
-
         .ad-notification { position: fixed; top: 20px; background: var(--accent); color: var(--bg-deep); padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .footer { text-align: center; padding: 15px; font-size: 11px; border-top: 1px solid rgba(162, 255, 0, 0.2); color: rgba(255,255,255,0.6); }
         .footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
@@ -86,18 +49,15 @@
 </head>
 <body>
     <div class="ad-notification" id="ad-notification"></div>
-    
     <div class="container">
         <div id="home-page">
             <div class="header">
                 <div class="header-title-wrapper">
-                    <!-- এখানে আপনার আইকন ইউআরএল টি বসান -->
                     <img src="https://iili.io/qf9Y1gp.png" alt="Icon" class="app-icon">
                     <h1>CLICKZITE</h1>
                 </div>
                 <div class="developer" id="dev-credit" onclick="window.location.href='https://youtube.com/@xenzite'">POWERED BY XENZITE</div>
             </div>
-            
             <div class="content">
                 <div class="user-info">
                     <div class="user-badge">VIP MEMBER </div>
@@ -107,7 +67,6 @@
                         <p id="user-id" style="font-size: 13px; opacity: 0.7; color: var(--accent);">@username</p>
                     </div>
                 </div>
-
                 <div class="stats">
                     <div class="stat-card">
                         <h3>AD WATCHED</h3>
@@ -118,7 +77,6 @@
                         <div class="value" id="member-count">0</div>
                     </div>
                 </div>
-
                 <div class="progress-container">
                     <div class="progress-label">
                         <span>MINING PROGRESS</span>
@@ -128,23 +86,19 @@
                         <div class="progress-fill" id="progress-fill"></div>
                     </div>
                 </div>
-
                 <div class="btn-group">
                     <button class="btn-3d" id="manual-btn" onclick="watchAd()">
                         <i class="fas fa-hand-pointer"></i> WATCH AD
                     </button>
-                    
                     <button class="btn-3d" id="auto-btn" onclick="startAutoAd()">
                         <i class="fas fa-robot"></i> START AUTO AD
                     </button>
-                    
                     <button class="btn-3d btn-stop" id="stop-btn" onclick="stopAutoAd()" style="display: none;">
                         <i class="fas fa-circle-stop"></i> STOP AUTO AD
                     </button>
                 </div>
             </div>
         </div>
-        
         <div class="footer" id="main-footer">
             DEVELOPED BY <a href="https://t.me/itsmanjorul" id="foot-link">MANJORUL ISLAM</a>
         </div>
@@ -155,7 +109,7 @@
             const dev = document.getElementById('dev-credit');
             const foot = document.getElementById('foot-link');
             if (!dev || !dev.innerText.includes("POWERED BY XENZITE") || !foot || !foot.innerText.includes("MANJORUL ISLAM")) {
-                document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>⚠️ Unauthorized modifications detected! Credit removal is not allowed.</h1>";
+                document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>⚠️ Unauthorized modifications!</h1>";
                 return false;
             }
             return true;
@@ -175,7 +129,6 @@
         const db = firebase.database();
 
         const MY_ZONE_ID = 10144078; 
-
         let watchedAdsCount = 0, isCooldown = false, autoMode = false, autoTimer = null;
         let tgUser = { id: 'guest', first_name: 'Guest' };
 
@@ -196,16 +149,13 @@
             db.ref('self_click_users').on('value', (snap) => {
                 document.getElementById('member-count').textContent = snap.numChildren() || 0;
             });
-
             db.ref('self_click_users/' + tgUser.id).on('value', (snap) => {
                 const data = snap.val();
                 if (data) {
                     watchedAdsCount = data.watched || 0;
                     updateUI();
                 } else {
-                    db.ref('self_click_users/' + tgUser.id).set({
-                        id: tgUser.id, name: tgUser.first_name, watched: 0
-                    });
+                    db.ref('self_click_users/' + tgUser.id).set({ id: tgUser.id, name: tgUser.first_name, watched: 0 });
                 }
             });
         }
@@ -221,20 +171,19 @@
             if(!securityCheck()) return;
             if (isCooldown) return;
             
+            isCooldown = true; // প্রসেসিং শুরু হলে বাটন লক
             showAdNotification("🔄 LOADING AD...");
             const adFunction = `show_${MY_ZONE_ID}`;
 
             if (typeof window[adFunction] === 'function') {
                 window[adFunction]().then(() => {
-                    handleReward(); // বিজ্ঞাপন সফল হলে কাউন্ট হবে
-                    startCooldown(5);
-                }).catch(() => {
-                    // কিছু ক্ষেত্রে Promise কাজ না করলে সরাসরি হ্যান্ডেল করা
                     handleReward(); 
+                    startCooldown(5); // ৫ সেকেন্ড কোলডাউন
+                }).catch(() => {
+                    handleReward(); // এরর হলেও কাউন্ট করবে (আপনার রিকোয়েস্ট অনুযায়ী)
                     startCooldown(5);
                 });
             } else {
-                // SDK লোড না হলে টেস্ট মোড
                 setTimeout(() => { handleReward(); startCooldown(5); }, 2000);
             }
         }
@@ -250,33 +199,33 @@
             autoMode = true;
             document.getElementById('auto-btn').style.display = 'none';
             document.getElementById('stop-btn').style.display = 'flex';
-            
             showAdNotification("🤖 AUTO MODE STARTED");
             
-            // প্রথম বিজ্ঞাপন কল
-            watchAd();
+            if(!isCooldown) watchAd();
             
             autoTimer = setInterval(() => {
-                if(!isCooldown && autoMode) watchAd();
-            }, 3000); // প্রতি ৩ সেকেন্ডে চেক করবে
+                if(!isCooldown && autoMode) {
+                    watchAd();
+                }
+            }, 1000); // প্রতি সেকেন্ডে কোলডাউন শেষ হয়েছে কিনা চেক করবে
         }
 
         function stopAutoAd() {
             autoMode = false;
             clearInterval(autoTimer);
             document.getElementById('auto-btn').style.display = 'flex';
-            document.getElementById('manual-btn').disabled = false;
             document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('manual-btn').disabled = false;
             document.getElementById('manual-btn').innerHTML = `<i class="fas fa-hand-pointer"></i> WATCH AD`;
             showAdNotification("🛑 AUTO MODE STOPPED");
         }
 
         function startCooldown(duration) {
             isCooldown = true;
-            let timeLeft = autoMode ? 10 : duration; 
+            let timeLeft = duration; // এখানে ৫ সেকেন্ড সেট করা হয়েছে
 
             const btn = document.getElementById('manual-btn');
-            btn.disabled = true; // কোলডাউন চলাকালীন বাটন লক থাকবে
+            btn.disabled = true;
 
             const timer = setInterval(() => {
                 btn.innerHTML = `<i class="fas fa-clock"></i> WAIT ${timeLeft}S`;
