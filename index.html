@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VaultX BD - Self Click</title>
+    <title>VaultX BD - Auto Click</title>
     
-    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for professional icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- ############################################################ -->
     <!-- MONETAG SDK: এখানে '10144078' এর জায়গায় আপনার নিজের Zone ID বসান -->
@@ -28,23 +29,57 @@
         .user-info { border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: rgba(162, 255, 0, 0.05); }
         .user-badge { position: absolute; top: -10px; right: 15px; background: var(--accent); color: var(--bg-deep); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
         .user-photo { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; background: #1a1a1a; }
+        
         .stats { display: flex; justify-content: space-around; margin: 20px 0; }
         .stat-card { border-radius: 15px; padding: 15px 10px; width: 46%; border: 1px solid var(--accent); text-align: center; background: rgba(255,255,255,0.02); }
-        .stat-card h3 { font-size: 12px; opacity: 0.8; margin-bottom: 5px; }
-        .stat-card .value { font-size: 20px; font-weight: 700; color: var(--accent); }
+        .stat-card h3 { font-size: 12px; opacity: 0.8; margin-bottom: 5px; text-transform: uppercase; }
+        .stat-card .value { font-size: 22px; font-weight: 700; color: var(--accent); }
+        
         .progress-container { margin: 25px 0; }
         .progress-label { margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; color: var(--accent); }
-        .progress-bar { height: 12px; background: #001a4d; border-radius: 10px; overflow: hidden; border: 1px solid var(--accent); }
-        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px var(--accent); }
-        .btn-3d { width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; background: var(--accent); color: var(--bg-deep); text-transform: uppercase; transition: transform 0.2s; }
-        .btn-3d:active { transform: scale(0.98); }
-        .btn-3d:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-        .ad-notification { position: fixed; top: 20px; background: var(--accent); color: var(--bg-deep); padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .progress-bar { height: 14px; background: #001a4d; border-radius: 10px; overflow: hidden; border: 1px solid var(--accent); position: relative; }
         
-        /* Footer Style with Link */
+        /* Animated Progress Fill */
+        .progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, var(--accent), #e1ff00, var(--accent));
+            background-size: 200% 100%;
+            width: 0%; 
+            transition: width 0.5s ease; 
+            box-shadow: 0 0 15px var(--accent);
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Buttons Design */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        .btn-3d { 
+            width: 100%; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 15px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            background: var(--accent); 
+            color: var(--bg-deep); 
+            text-transform: uppercase; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-3d:active { transform: scale(0.96); }
+        .btn-3d:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+        .btn-stop { background: #ff3e3e !important; color: white !important; }
+
+        .ad-notification { position: fixed; top: 20px; background: var(--accent); color: var(--bg-deep); padding: 12px 25px; border-radius: 8px; font-weight: bold; display: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .footer { text-align: center; padding: 15px; font-size: 11px; border-top: 1px solid rgba(162, 255, 0, 0.2); color: rgba(255,255,255,0.6); }
-        .footer a { color: var(--accent); text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .footer a:hover { text-shadow: 0 0 10px var(--accent); }
+        .footer a { color: var(--accent); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,14 +88,13 @@
     <div class="container">
         <div id="home-page">
             <div class="header">
-                <h1>VAULTX BD</h1>
-                <div class="developer">Self-Click Mode Active</div>
+                <h1 id="check-h1">VAULTX BD</h1>
+                <div class="developer" id="check-dev" onclick="window.location.href='https://youtube.com/@xenzite'">POWERED BY XENZITE</div>
             </div>
             
             <div class="content">
-                <!-- User Profile Section -->
                 <div class="user-info">
-                    <div class="user-badge">PARTNER</div>
+                    <div class="user-badge">VIP MEMBER </div>
                     <img id="user-photo" class="user-photo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
                     <div>
                         <p id="user-name" style="font-weight: 800; font-size: 18px;">Loading...</p>
@@ -68,22 +102,20 @@
                     </div>
                 </div>
 
-                <!-- Stats Section -->
                 <div class="stats">
                     <div class="stat-card">
-                        <h3>TOTAL WATCHED</h3>
+                        <h3>AD WATCHED</h3>
                         <div class="value" id="watched-ads">0</div>
                     </div>
                     <div class="stat-card">
-                        <h3>REVENUE PTS</h3>
-                        <div class="value" id="earned-points">0.0000</div>
+                        <h3>TOTAL MEMBERS</h3>
+                        <div class="value" id="member-count">0</div>
                     </div>
                 </div>
 
-                <!-- Personal Progress -->
                 <div class="progress-container">
                     <div class="progress-label">
-                        <span>YOUR ACTIVITY</span>
+                        <span>MINING PROGRESS</span>
                         <span id="ads-progress">0%</span>
                     </div>
                     <div class="progress-bar">
@@ -91,22 +123,31 @@
                     </div>
                 </div>
 
-                <!-- Ad Button -->
-                <button class="btn-3d" id="ad-btn" onclick="watchAd()">🎥 WATCH AD & EARN</button>
+                <div class="btn-group">
+                    <!-- Manual Ad Button -->
+                    <button class="btn-3d" id="manual-btn" onclick="watchAd()">
+                        <i class="fas fa-hand-pointer"></i> WATCH AD
+                    </button>
+                    
+                    <!-- Auto Ad Button -->
+                    <button class="btn-3d" id="auto-btn" onclick="startAutoAd()">
+                        <i class="fas fa-robot"></i> START AUTO AD
+                    </button>
+                    
+                    <!-- Stop Ad Button -->
+                    <button class="btn-3d btn-stop" id="stop-btn" onclick="stopAutoAd()" style="display: none;">
+                        <i class="fas fa-circle-stop"></i> STOP AUTO AD
+                    </button>
+                </div>
             </div>
         </div>
         
-        <!-- Updated Footer with Links -->
-        <div class="footer">
-            POWERED BY <a href="https://t.me/itsmanjorul" target="_blank">XENZITE</a> 
-            • DEVELOPED BY <a href="https://t.me/itsmanjorul" target="_blank">MANJORUL ISLAM</a>
+        <div class="footer" id="check-footer">
+            DEVELOPED BY <a href="https://t.me/itsmanjorul" id="check-link">MANJORUL ISLAM</a>
         </div>
     </div>
 
     <script>
-        // ############################################################
-        // 1. Firebase Configuration
-        // ############################################################
         const firebaseConfig = {
             apiKey: "AIzaSyDX5P48FmrKCK7BLnkJinyqG7mJYem0u_w",
             authDomain: "vaultxbd.firebaseapp.com",
@@ -120,50 +161,50 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const POINTS_PER_AD = 0.0001; 
-        const COOLDOWN_TIME = 5; 
-        
-        // ############################################################
-        // 2. Monetag Zone ID
-        // ############################################################
         const MY_ZONE_ID = 10144078; 
+        const AUTO_AD_GAP = 10000; // ১০ সেকেন্ড বিরতি
 
-        let watchedAdsCount = 0, earnedPoints = 0, isCooldown = false;
-        let tgUser = { id: 'guest_user', first_name: 'Guest User' };
+        let watchedAdsCount = 0, isCooldown = false, autoMode = false, autoTimer = null;
+        let tgUser = { id: 'guest', first_name: 'Guest' };
 
-        function initApp() {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            tg.ready();
+        // ক্রেডিট চেক ফাংশন
+        function checkIntegrity() {
+            const h1 = document.getElementById('check-h1')?.innerText.trim();
+            const dev = document.getElementById('check-dev')?.innerText.trim();
+            const footerLink = document.getElementById('check-link')?.innerText.trim();
 
-            if (tg.initDataUnsafe?.user) {
-                tgUser = tg.initDataUnsafe.user;
-                document.getElementById('user-name').textContent = tgUser.first_name + (tgUser.last_name ? ' ' + tgUser.last_name : '');
-                document.getElementById('user-id').textContent = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
-                
-                if (tgUser.photo_url) {
-                    document.getElementById('user-photo').src = tgUser.photo_url;
-                }
+            if (h1 !== "VAULTX BD" || dev !== "POWERED BY XENZITE" || footerLink !== "MANJORUL ISLAM") {
+                document.body.innerHTML = "<div style='color:white; background:#000f2e; height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; font-family:sans-serif;'><div><h1 style='color:#ff3e3e;'>ACCESS DENIED!</h1><p>You have modified the developer credits. Please restore the original credits to use this app.</p></div></div>";
+                throw new Error("Integrity check failed.");
             }
-            syncUserData();
         }
 
-        function syncUserData() {
-            const userRef = db.ref('self_click_users/' + tgUser.id);
-            userRef.on('value', (snap) => {
+        function initApp() {
+            checkIntegrity(); // ক্রেডিট চেক কল করা হলো
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            if (tg.initDataUnsafe?.user) {
+                tgUser = tg.initDataUnsafe.user;
+                document.getElementById('user-name').textContent = tgUser.first_name;
+                document.getElementById('user-id').textContent = tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`;
+                if (tgUser.photo_url) document.getElementById('user-photo').src = tgUser.photo_url;
+            }
+            syncData();
+        }
+
+        function syncData() {
+            db.ref('self_click_users').on('value', (snap) => {
+                document.getElementById('member-count').textContent = snap.numChildren() || 0;
+            });
+
+            db.ref('self_click_users/' + tgUser.id).on('value', (snap) => {
                 const data = snap.val();
                 if (data) {
                     watchedAdsCount = data.watched || 0;
-                    earnedPoints = data.points || 0;
                     updateUI();
                 } else {
-                    userRef.set({
-                        id: tgUser.id,
-                        name: tgUser.first_name,
-                        username: tgUser.username || 'N/A',
-                        points: 0,
-                        watched: 0,
-                        lastActive: Date.now()
+                    db.ref('self_click_users/' + tgUser.id).set({
+                        id: tgUser.id, name: tgUser.first_name, watched: 0
                     });
                 }
             });
@@ -171,59 +212,70 @@
 
         function updateUI() {
             document.getElementById('watched-ads').textContent = watchedAdsCount;
-            document.getElementById('earned-points').textContent = earnedPoints.toFixed(4);
-            
-            let progress = (watchedAdsCount % 500) / 5; 
-            document.getElementById('ads-progress').textContent = Math.floor(progress) + "%";
+            let progress = (watchedAdsCount % 100); 
+            document.getElementById('ads-progress').textContent = progress + "%";
             document.getElementById('progress-fill').style.width = progress + "%";
         }
 
         function watchAd() {
             if (isCooldown) return;
-            showAdNotification("🔄 LOADING VIDEO...");
-
-            const adFunction = `show_${MY_ZONE_ID}`;
             
+            showAdNotification("🔄 LOADING AD...");
+            const adFunction = `show_${MY_ZONE_ID}`;
+
             if (typeof window[adFunction] === 'function') {
                 window[adFunction]().then(() => {
-                    rewardUser();
-                    startCooldown();
-                }).catch((e) => {
-                    showAdNotification("❌ AD FAILED!");
+                    handleReward();
+                    startCooldown(5);
+                }).catch(() => {
+                    showAdNotification("❌ AD ERROR!");
+                    if(autoMode) stopAutoAd();
                 });
             } else {
-                // Default fallback for testing
-                setTimeout(() => {
-                    rewardUser();
-                    startCooldown();
-                }, 2000);
+                setTimeout(() => { handleReward(); startCooldown(5); }, 2000);
             }
         }
 
-        function rewardUser() {
+        function handleReward() {
             watchedAdsCount++;
-            earnedPoints += POINTS_PER_AD;
-            db.ref('self_click_users/' + tgUser.id).update({ 
-                watched: watchedAdsCount, 
-                points: earnedPoints,
-                lastActive: Date.now()
-            });
-            showAdNotification("✅ SUCCESS! +0.0001");
+            db.ref('self_click_users/' + tgUser.id).update({ watched: watchedAdsCount });
+            showAdNotification("✅ AD COMPLETED!");
         }
 
-        function startCooldown() {
+        function startAutoAd() {
+            autoMode = true;
+            document.getElementById('auto-btn').style.display = 'none';
+            document.getElementById('manual-btn').disabled = true;
+            document.getElementById('stop-btn').style.display = 'flex';
+            showAdNotification("🤖 AUTO MODE STARTED");
+            watchAd();
+            autoTimer = setInterval(() => {
+                if(!isCooldown) watchAd();
+            }, 2000); 
+        }
+
+        function stopAutoAd() {
+            autoMode = false;
+            clearInterval(autoTimer);
+            document.getElementById('auto-btn').style.display = 'flex';
+            document.getElementById('manual-btn').disabled = false;
+            document.getElementById('stop-btn').style.display = 'none';
+            showAdNotification("🛑 AUTO MODE STOPPED");
+        }
+
+        function startCooldown(duration) {
             isCooldown = true;
-            const btn = document.getElementById('ad-btn');
-            btn.disabled = true;
-            let timeLeft = COOLDOWN_TIME;
+            let timeLeft = duration;
+            if(autoMode) timeLeft = 10; 
+
+            const btn = document.getElementById('manual-btn');
             const timer = setInterval(() => {
-                btn.textContent = `WAIT ${timeLeft}S...`;
+                if(!autoMode) btn.innerHTML = `<i class="fas fa-clock"></i> WAIT ${timeLeft}S`;
                 timeLeft--;
                 if (timeLeft < 0) {
                     clearInterval(timer);
                     isCooldown = false;
-                    btn.disabled = false;
-                    btn.textContent = "🎥 WATCH AD & EARN";
+                    if(!autoMode) btn.innerHTML = `<i class="fas fa-hand-pointer"></i> WATCH AD`;
                 }
             }, 1000);
         }
@@ -232,7 +284,7 @@
             const el = document.getElementById('ad-notification');
             el.textContent = msg;
             el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 2500);
+            setTimeout(() => el.style.display = 'none', 2000);
         }
 
         window.onload = initApp;
