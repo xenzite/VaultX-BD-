@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClickZite - Auto Click</title>
+    <title>ClickZite- Auto Click</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for professional icons -->
@@ -24,7 +24,6 @@
         .container { width: 100%; max-width: 500px; background: var(--bg-deep); border-radius: 20px; overflow: hidden; box-shadow: 0 0 20px var(--accent); border: 2px solid var(--accent); position: relative; }
         .header { background: var(--accent); padding: 25px 20px; text-align: center; }
         
-        /* Header Title and Icon styling */
         .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
         .app-icon { width: 35px; height: 35px; object-fit: contain; border-radius: 5px; }
         .header h1 { color: var(--bg-deep); font-size: 24px; font-weight: 800; letter-spacing: 2px; }
@@ -94,9 +93,8 @@
                 <div class="header-title-wrapper">
                     <!-- এখানে আপনার আইকন ইউআরএল টি বসান -->
                     <img src="https://iili.io/qf9Y1gp.png" alt="Icon" class="app-icon">
-                    <h1>ClickZite</h1>
+                    <h1>CLICKZITE</h1>
                 </div>
-                <!-- ক্রেডিট সেকশন (পরিবর্তন করবেন না) -->
                 <div class="developer" id="dev-credit" onclick="window.location.href='https://youtube.com/@xenzite'">POWERED BY XENZITE</div>
             </div>
             
@@ -148,18 +146,14 @@
         </div>
         
         <div class="footer" id="main-footer">
-            <!-- ক্রেডিট সেকশন (পরিবর্তন করবেন না) -->
             DEVELOPED BY <a href="https://t.me/itsmanjorul" id="foot-link">MANJORUL ISLAM</a>
         </div>
     </div>
 
     <script>
-        // ক্রেডিট ভেরিফিকেশন ফাংশন
         function securityCheck() {
             const dev = document.getElementById('dev-credit');
             const foot = document.getElementById('foot-link');
-            
-            // যদি কেউ টেক্সট পরিবর্তন করে তবে অ্যাপ ব্ল্যাঙ্ক হয়ে যাবে
             if (!dev || !dev.innerText.includes("POWERED BY XENZITE") || !foot || !foot.innerText.includes("MANJORUL ISLAM")) {
                 document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>⚠️ Unauthorized modifications detected! Credit removal is not allowed.</h1>";
                 return false;
@@ -181,15 +175,12 @@
         const db = firebase.database();
 
         const MY_ZONE_ID = 10144078; 
-        const AUTO_AD_GAP = 10000;
 
         let watchedAdsCount = 0, isCooldown = false, autoMode = false, autoTimer = null;
         let tgUser = { id: 'guest', first_name: 'Guest' };
 
         function initApp() {
-            // সিকিউরিটি চেক কল করা হচ্ছে
             if(!securityCheck()) return;
-
             const tg = window.Telegram.WebApp;
             tg.expand();
             if (tg.initDataUnsafe?.user) {
@@ -227,7 +218,7 @@
         }
 
         function watchAd() {
-            if(!securityCheck()) return; // প্রতিবার এডের সময়ও চেক করবে
+            if(!securityCheck()) return;
             if (isCooldown) return;
             
             showAdNotification("🔄 LOADING AD...");
@@ -235,13 +226,15 @@
 
             if (typeof window[adFunction] === 'function') {
                 window[adFunction]().then(() => {
-                    handleReward();
+                    handleReward(); // বিজ্ঞাপন সফল হলে কাউন্ট হবে
                     startCooldown(5);
                 }).catch(() => {
-                    showAdNotification("❌ AD ERROR!");
-                    if(autoMode) stopAutoAd();
+                    // কিছু ক্ষেত্রে Promise কাজ না করলে সরাসরি হ্যান্ডেল করা
+                    handleReward(); 
+                    startCooldown(5);
                 });
             } else {
+                // SDK লোড না হলে টেস্ট মোড
                 setTimeout(() => { handleReward(); startCooldown(5); }, 2000);
             }
         }
@@ -256,13 +249,16 @@
             if(!securityCheck()) return;
             autoMode = true;
             document.getElementById('auto-btn').style.display = 'none';
-            document.getElementById('manual-btn').disabled = true;
             document.getElementById('stop-btn').style.display = 'flex';
+            
             showAdNotification("🤖 AUTO MODE STARTED");
+            
+            // প্রথম বিজ্ঞাপন কল
             watchAd();
+            
             autoTimer = setInterval(() => {
-                if(!isCooldown) watchAd();
-            }, 2000); 
+                if(!isCooldown && autoMode) watchAd();
+            }, 3000); // প্রতি ৩ সেকেন্ডে চেক করবে
         }
 
         function stopAutoAd() {
@@ -271,22 +267,29 @@
             document.getElementById('auto-btn').style.display = 'flex';
             document.getElementById('manual-btn').disabled = false;
             document.getElementById('stop-btn').style.display = 'none';
+            document.getElementById('manual-btn').innerHTML = `<i class="fas fa-hand-pointer"></i> WATCH AD`;
             showAdNotification("🛑 AUTO MODE STOPPED");
         }
 
         function startCooldown(duration) {
             isCooldown = true;
-            let timeLeft = duration;
-            if(autoMode) timeLeft = 10; 
+            let timeLeft = autoMode ? 10 : duration; 
 
             const btn = document.getElementById('manual-btn');
+            btn.disabled = true; // কোলডাউন চলাকালীন বাটন লক থাকবে
+
             const timer = setInterval(() => {
-                if(!autoMode) btn.innerHTML = `<i class="fas fa-clock"></i> WAIT ${timeLeft}S`;
+                btn.innerHTML = `<i class="fas fa-clock"></i> WAIT ${timeLeft}S`;
                 timeLeft--;
                 if (timeLeft < 0) {
                     clearInterval(timer);
                     isCooldown = false;
-                    if(!autoMode) btn.innerHTML = `<i class="fas fa-hand-pointer"></i> WATCH AD`;
+                    if(!autoMode) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i class="fas fa-hand-pointer"></i> WATCH AD`;
+                    } else {
+                        btn.innerHTML = `<i class="fas fa-robot"></i> AUTO RUNNING...`;
+                    }
                 }
             }, 1000);
         }
