@@ -23,8 +23,13 @@
         body { background-color: var(--bg-deep); color: var(--text); min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
         .container { width: 100%; max-width: 500px; background: var(--bg-deep); border-radius: 20px; overflow: hidden; box-shadow: 0 0 20px var(--accent); border: 2px solid var(--accent); position: relative; }
         .header { background: var(--accent); padding: 25px 20px; text-align: center; }
+        
+        /* Header Title and Icon styling */
+        .header-title-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
+        .app-icon { width: 35px; height: 35px; object-fit: contain; border-radius: 5px; }
         .header h1 { color: var(--bg-deep); font-size: 24px; font-weight: 800; letter-spacing: 2px; }
-        .developer { display: inline-block; background: rgba(0, 0, 0, 0.3); padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; color: var(--bg-deep); font-weight: bold; }
+        
+        .developer { display: inline-block; background: rgba(0, 0, 0, 0.3); padding: 5px 15px; border-radius: 20px; font-size: 12px; margin-top: 10px; color: var(--bg-deep); font-weight: bold; cursor: pointer; }
         .content { padding: 25px; }
         .user-info { border-radius: 15px; padding: 20px; margin-bottom: 20px; text-align: center; border: 1px solid var(--accent); display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; background: rgba(162, 255, 0, 0.05); }
         .user-badge { position: absolute; top: -10px; right: 15px; background: var(--accent); color: var(--bg-deep); padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: bold; }
@@ -39,7 +44,6 @@
         .progress-label { margin-bottom: 10px; display: flex; justify-content: space-between; font-size: 14px; color: var(--accent); }
         .progress-bar { height: 14px; background: #001a4d; border-radius: 10px; overflow: hidden; border: 1px solid var(--accent); position: relative; }
         
-        /* Animated Progress Fill */
         .progress-fill { 
             height: 100%; 
             background: linear-gradient(90deg, var(--accent), #e1ff00, var(--accent));
@@ -54,7 +58,6 @@
             100% { background-position: 200% 0; }
         }
 
-        /* Buttons Design */
         .btn-group { display: flex; flex-direction: column; gap: 12px; }
         .btn-3d { 
             width: 100%; 
@@ -88,8 +91,13 @@
     <div class="container">
         <div id="home-page">
             <div class="header">
-                <h1 id="check-h1">CLICKZITE</h1>
-                <div class="developer" id="check-dev" onclick="window.location.href='https://youtube.com/@xenzite'">POWERED BY XENZITE</div>
+                <div class="header-title-wrapper">
+                    <!-- এখানে আপনার আইকন ইউআরএল টি বসান -->
+                    <img src="https://iili.io/qf9Y1gp.png" alt="Icon" class="app-icon">
+                    <h1>ClickZite</h1>
+                </div>
+                <!-- ক্রেডিট সেকশন (পরিবর্তন করবেন না) -->
+                <div class="developer" id="dev-credit" onclick="window.location.href='https://youtube.com/@xenzite'">POWERED BY XENZITE</div>
             </div>
             
             <div class="content">
@@ -124,17 +132,14 @@
                 </div>
 
                 <div class="btn-group">
-                    <!-- Manual Ad Button -->
                     <button class="btn-3d" id="manual-btn" onclick="watchAd()">
                         <i class="fas fa-hand-pointer"></i> WATCH AD
                     </button>
                     
-                    <!-- Auto Ad Button -->
                     <button class="btn-3d" id="auto-btn" onclick="startAutoAd()">
                         <i class="fas fa-robot"></i> START AUTO AD
                     </button>
                     
-                    <!-- Stop Ad Button -->
                     <button class="btn-3d btn-stop" id="stop-btn" onclick="stopAutoAd()" style="display: none;">
                         <i class="fas fa-circle-stop"></i> STOP AUTO AD
                     </button>
@@ -142,12 +147,26 @@
             </div>
         </div>
         
-        <div class="footer" id="check-footer">
-            DEVELOPED BY <a href="https://t.me/itsmanjorul" id="check-link">MANJORUL ISLAM</a>
+        <div class="footer" id="main-footer">
+            <!-- ক্রেডিট সেকশন (পরিবর্তন করবেন না) -->
+            DEVELOPED BY <a href="https://t.me/itsmanjorul" id="foot-link">MANJORUL ISLAM</a>
         </div>
     </div>
 
     <script>
+        // ক্রেডিট ভেরিফিকেশন ফাংশন
+        function securityCheck() {
+            const dev = document.getElementById('dev-credit');
+            const foot = document.getElementById('foot-link');
+            
+            // যদি কেউ টেক্সট পরিবর্তন করে তবে অ্যাপ ব্ল্যাঙ্ক হয়ে যাবে
+            if (!dev || !dev.innerText.includes("POWERED BY XENZITE") || !foot || !foot.innerText.includes("MANJORUL ISLAM")) {
+                document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:50px;'>⚠️ Unauthorized modifications detected! Credit removal is not allowed.</h1>";
+                return false;
+            }
+            return true;
+        }
+
         const firebaseConfig = {
             apiKey: "AIzaSyDX5P48FmrKCK7BLnkJinyqG7mJYem0u_w",
             authDomain: "vaultxbd.firebaseapp.com",
@@ -162,25 +181,15 @@
         const db = firebase.database();
 
         const MY_ZONE_ID = 10144078; 
-        const AUTO_AD_GAP = 10000; // ১০ সেকেন্ড বিরতি
+        const AUTO_AD_GAP = 10000;
 
         let watchedAdsCount = 0, isCooldown = false, autoMode = false, autoTimer = null;
         let tgUser = { id: 'guest', first_name: 'Guest' };
 
-        // ক্রেডিট চেক ফাংশন
-        function checkIntegrity() {
-            const h1 = document.getElementById('check-h1')?.innerText.trim();
-            const dev = document.getElementById('check-dev')?.innerText.trim();
-            const footerLink = document.getElementById('check-link')?.innerText.trim();
-
-            if (h1 !== "VAULTX BD" || dev !== "POWERED BY XENZITE" || footerLink !== "MANJORUL ISLAM") {
-                document.body.innerHTML = "<div style='color:white; background:#000f2e; height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:20px; font-family:sans-serif;'><div><h1 style='color:#ff3e3e;'>ACCESS DENIED!</h1><p>You have modified the developer credits. Please restore the original credits to use this app.</p></div></div>";
-                throw new Error("Integrity check failed.");
-            }
-        }
-
         function initApp() {
-            checkIntegrity(); // ক্রেডিট চেক কল করা হলো
+            // সিকিউরিটি চেক কল করা হচ্ছে
+            if(!securityCheck()) return;
+
             const tg = window.Telegram.WebApp;
             tg.expand();
             if (tg.initDataUnsafe?.user) {
@@ -218,6 +227,7 @@
         }
 
         function watchAd() {
+            if(!securityCheck()) return; // প্রতিবার এডের সময়ও চেক করবে
             if (isCooldown) return;
             
             showAdNotification("🔄 LOADING AD...");
@@ -243,6 +253,7 @@
         }
 
         function startAutoAd() {
+            if(!securityCheck()) return;
             autoMode = true;
             document.getElementById('auto-btn').style.display = 'none';
             document.getElementById('manual-btn').disabled = true;
